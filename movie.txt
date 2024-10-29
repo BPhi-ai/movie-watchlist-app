@@ -1,0 +1,49 @@
+NAME: Brian Pham
+VERSION: 2 on 9/24/24 at 7:25pm
+
+GUESTS
+
+POST /guests/register
+-> request body is a username and password object
+-> returns the created guest object with the id
+
+POST /guests/login
+-> request body is a username and password object
+-> returns a guest object if login is successful
+-> returns an error if login fails
+
+GET /guests/:id
+-> request header contains guest_id
+-> returns a guest object (excluding password) with associated movies in watchlist
+-> returns an error if no guest was found
+
+WATCHLIST
+
+POST /watchlist
+-> request header contains guest_id
+-> request body is a movie object (movieId, title, genre, image)
+-> returns the watchlist object with the id created from the server
+
+PUT /watchlist/:id
+-> request header contains guest_id
+-> request body is a status object ('pending', 'watched')
+-> returns the updated watchlist object
+-> returns an error if no watchlist object was found
+
+DELETE /watchlist/:id
+-> request header contains guest_id
+-> returns confirmation and id that the watchlist object was deleted
+-> returns an error if no watchlist object was found
+
+MOVIES
+
+GET /movies/search
+-> query parameter named movie: ?movie=District 9
+-> returns an array of movie objects based on the search
+
+GET /movies/popular
+-> returns an array of popular movie objects
+
+GET /movies/recommendations/:movie_id
+-> request header contains guest_id
+-> returns an array of recommended movie objects based on a guest's watchlist movie id

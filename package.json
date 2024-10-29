@@ -1,0 +1,20 @@
+{
+  "name": "movie-watchlist-app",
+  "version": "1.0.0",
+  "description": "a program to interacting with TMDB API for guests to create movie watchlists ",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "dev" : "npx nodemon app.js"
+  },
+  "author": "Brian Pham",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}
