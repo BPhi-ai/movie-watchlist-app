@@ -1,22 +1,19 @@
 /* eslint-disable camelcase */
 import express from 'express';
 
+import { verifyGuest } from '../middleware/authorization.js';
+
 import { Guests, MovieWatchlist } from '../../db/mocks.js';
 
 const router = express.Router();
 
+router.use(verifyGuest);
+
 // POST /watchlist
 router.post('/', async (req, res) => {
     try {
-        const guest_id = Number(req.headers.guest_id);
+        const { guest_id } = req.verified;
         const movie = req.body;
-
-        // ensure guest exists
-        const guest = Guests.find('_id', guest_id);
-
-        if (!guest) {
-            return res.status(404).json({ error: 'Guest not found' });
-        }
 
         // add a movie to the watchlist with default 'pending' status
         const addToWatchlist = MovieWatchlist.add({
@@ -30,9 +27,39 @@ router.post('/', async (req, res) => {
         });
 
         // update the guest movie watchlist by adding the new movie id
-        Guests.update(guest._id, addToWatchlist._id, 'push');
+        Guests.update(guest_id, addToWatchlist._id, 'push');
 
         res.json(addToWatchlist);
+    } catch (error) {
+        res.status(500).json({ error: error.toString() });
+    }
+});
+
+// PUT /watchlist/:id
+router.put('/:id', async (req, res) => {
+    try {
+        const { guest_id } = req.verified;
+        const id = Number(req.params.id);
+        const { status } = req.body;
+
+        // ensure guest exists
+        const guest = await Guests.find('_id', guest_id);
+
+        // ensure the guest owns the watchlist item
+        if (!guest.movie_watchlist.includes(id)) {
+            return res.status(403).json({ error: 'Forbidden: You do not own this watchlist.' });
+        }
+
+        // find the movie in the watchlist by id
+        const movie = MovieWatchlist.find('_id', id);
+        if (!movie) {
+            return res.status(404).json({ error: 'Watchlist movie not found.' });
+        }
+
+        // update the movie status in the watchlist
+        const updated = MovieWatchlist.update(id, status);
+
+        res.json(updated);
     } catch (error) {
         res.status(500).json({ error: error.toString() });
     }
@@ -41,20 +68,14 @@ router.post('/', async (req, res) => {
 // DELETE /watchlist/:id
 router.delete('/:id', async (req, res) => {
     try {
-        const guest_id = Number(req.headers.guest_id);
+        const { guest_id } = req.verified;
         const id = Number(req.params.id);
-
-        // ensure guest exists
-        const guest = Guests.find('_id', guest_id);
-        if (!guest) {
-            return res.status(404).json({ error: 'Guest not found' });
-        }
 
         // delete the movie from the watchlist by id
         const watchlist_id = MovieWatchlist.delete(id);
 
         // update the guest watchlist to remove the movie id
-        Guests.update(guest._id, watchlist_id, 'pull');
+        Guests.update(guest_id, watchlist_id, 'pull');
 
         res.json({ watchlist_id, delete: 'success' });
     } catch (error) {

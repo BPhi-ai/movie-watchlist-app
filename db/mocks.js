@@ -1,15 +1,31 @@
+/*
+    IMPORTANT NOTE
+
+    THIS IS A PLACEHOLDER FOR A DATABASE AND DOES NOT SAVE DATA
+
+    THIS FILEs ONLY WORKS WITH MOVIE WATCHLIST APP.
+
+    PLEASE USE THE mocks.js NOTED IN HOMEWORK 1 FOR YOUR HOMEWORK 1
+    (https://calstatela.instructure.com/courses/106528/files/18698555?wrap=1)
+*/
 const Guests = {
     guests: [
         {
             _id: 1,
             username: 'prof_auman',
-            password: 'password', // this will be hashed in HW2
+            // plain text password is password123
+            password:
+                'fbcb9688a819e2f1e72f17258ed4e05d:7359fd3f80163d039dae0f13bbb37f30b1375d6a25cfeaf08671db4f45f952d2',
             movie_watchlist: [1, 2]
         }
     ],
 
     find(key, value) {
         return this.guests.find((guest) => guest[key] === value);
+    },
+
+    exists(id) {
+        return this.guests.some((guest) => guest._id === id);
     },
 
     add(guest) {
@@ -40,7 +56,7 @@ const MovieWatchlist = {
         {
             _id: 1,
             movie: {
-                movieId: 17654,
+                movie_id: 17654,
                 title: 'District 9',
                 genre: 'Action',
                 image: 'https://image.tmdb.org/t/p/w500/tuGlQkqLxnodDSk6mp5c2wvxUEd.jpg'
@@ -50,7 +66,7 @@ const MovieWatchlist = {
         {
             _id: 2,
             movie: {
-                movieId: 198184,
+                movie_id: 198184,
                 title: 'Chappie',
                 genre: 'Action',
                 image: 'https://image.tmdb.org/t/p/w500/hpnuXlKKWznTgbheGe4iQXzkuwJ.jpg'
