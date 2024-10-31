@@ -7,7 +7,7 @@
 import 'dotenv/config';
 import express from 'express';
 
-import mockDB from './db/connection.js';
+import mongodb from './db/connection.js';
 
 import movies from './api/routes/movies.js';
 import guests from './api/routes/guests.js';
@@ -29,7 +29,7 @@ app.use('/watchlist', watchlist);
 
 app.listen(PORT, async () => {
     // simulate connectioning to a database before starting the server
-    await mockDB.connect();
+    await mongodb.connect();
 
     // log the server's URL and port to the console
     console.log(`Server is running on http://localhost:${PORT}`);
