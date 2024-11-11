@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import { verifyToken } from '../util/auth.js';
 
-import { Guests } from '../../db/mocks.js';
+import Guest from '../models/guest.js';
 
 // express.js middleware for verifying guest token
 const verifyGuest = async (req, res, next) => {
@@ -24,7 +24,7 @@ const verifyGuest = async (req, res, next) => {
             return res.status(401).json({ error: 'Unauthorized: token is invalid or expired' });
         }
 
-        const exists = Guests.exists(verified.guest_id);
+        const exists = await Guest.exists({ _id: verified.guest_id });
         if (!exists) {
             return res.status(404).json({ error: 'Guest not found' });
         }
